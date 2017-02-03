@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Kill all radiotray processes
+pkill -f radiotray
+
+INSTALLED=$(dpkg -l | grep radiotray | wc -c)
+
+if (( $INSTALLED == 0)); then
+  sudo apt-get install radiotray -y
+fi
+
+# 320 kbps
+if [[ $1 == "trance" ]]; then
+  RADIO="http://yp.shoutcast.com/sbin/tunein-station.pls?id=549234"
+fi
+
+# 320 kbps
+if [[ $1 == "lounge" ]]; then
+  RADIO="http://www.lounge-radio.com/listen128.m3u"
+fi
+
+if [[ $1 == "paradise" ]]; then
+  RADIO="http://www.radioparadise.com/musiclinks/rp_128.m3u"
+fi
+
+# 320 kbps
+if [[ $1 == "classical" ]]; then
+  RADIO="http://yp.shoutcast.com/sbin/tunein-station.pls?id=1171747"
+fi
+
+# 256 kbps
+if [[ $1 == "dubstep" ]]; then
+  RADIO="http://yp.shoutcast.com/sbin/tunein-station.pls?id=1191311"
+fi
+
+
+nohup radiotray $RADIO > /dev/null 2>&1 &
