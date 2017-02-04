@@ -1,11 +1,19 @@
 #!/bin/bash
 
-# Kill all radiotray processes
-pkill -f radiotray
+function stop_radio {
+  $(pkill -f "radiotray ") > /dev/null 
+}
+
+
+function start_radio {
+  nohup radiotray $RADIO > /dev/null 2>&1 &
+}
+
 
 INSTALLED=$(dpkg -l | grep radiotray | wc -c)
 
 if (( $INSTALLED == 0)); then
+  echo 'Installing radiotray'
   sudo apt-get install radiotray -y
 fi
 
@@ -33,5 +41,10 @@ if [[ $1 == "dubstep" ]]; then
   RADIO="http://yp.shoutcast.com/sbin/tunein-station.pls?id=1191311"
 fi
 
+if [[ $1 == "stop" ]]; then
+  stop_radio
+  exit
+fi
 
-nohup radiotray $RADIO > /dev/null 2>&1 &
+stop_radio
+start_radio
