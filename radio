@@ -5,46 +5,31 @@ function stop_radio {
 }
 
 
+
 function start_radio {
+  
+  RADIO=$(cat $HOME/.radio_stations | grep "$1" | awk {'print $2'}) 
   nohup radiotray $RADIO > /dev/null 2>&1 &
+
 }
 
 
-INSTALLED=$(dpkg -l | grep radiotray | wc -c)
+function handle_dependencies {
+  INSTALLED=$(dpkg -l | grep radiotray | wc -c)
 
-if (( $INSTALLED == 0)); then
-  echo 'Installing radiotray'
-  sudo apt-get install radiotray -y
-fi
-
-# 320 kbps
-if [[ $1 == "trance" ]]; then
-  RADIO="http://yp.shoutcast.com/sbin/tunein-station.pls?id=549234"
-fi
-
-# 320 kbps
-if [[ $1 == "lounge" ]]; then
-  RADIO="http://www.lounge-radio.com/listen128.m3u"
-fi
-
-if [[ $1 == "paradise" ]]; then
-  RADIO="http://www.radioparadise.com/musiclinks/rp_128.m3u"
-fi
-
-# 320 kbps
-if [[ $1 == "classical" ]]; then
-  RADIO="http://yp.shoutcast.com/sbin/tunein-station.pls?id=1171747"
-fi
-
-# 256 kbps
-if [[ $1 == "dubstep" ]]; then
-  RADIO="http://yp.shoutcast.com/sbin/tunein-station.pls?id=1191311"
-fi
+  if (( $INSTALLED == 0)); then
+    echo 'Installing radiotray'
+    sudo apt-get install radiotray -y
+  fi
+} 
 
 if [[ $1 == "stop" ]]; then
   stop_radio
   exit
 fi
 
+
+
+handle_dependencies
 stop_radio
-start_radio
+start_radio $1
