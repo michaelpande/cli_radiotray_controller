@@ -9,6 +9,15 @@ function stop_radio {
 function start_radio {
   
   RADIO=$(cat $HOME/.radio_stations | grep "$1" | awk {'print $2'}) 
+	STATIONS=$(cat $HOME/.radio_stations | awk {'print $1'})
+	RADIO_EXIST=$(echo $RADIO | wc -c )
+
+	if (( $RADIO_EXIST == 1 )); then
+		notify-send "Try one of these instead:" "$STATIONS"
+		exit
+	fi
+
+	notify-send --icon=gtk-info -t 1 "Now playing: " $1
   nohup radiotray $RADIO > /dev/null 2>&1 &
 
 }
